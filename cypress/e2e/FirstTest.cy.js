@@ -19,7 +19,14 @@ describe('Launch GreenKart', () => {
       if (actualProductName.includes(`Cashews`)) {
         cy.wrap($item).find(`button`).click()
       }
-
     })
+
+    // Non cypress commands cannot resolve promise by themselves.
+    // We need to manually resolve it by then()
+    cy.get(`.brand`).then((logElement) => {
+      cy.log(logElement.text())
+    })
+
+    cy.log(`Test completed successfully!`)
   })
 })
