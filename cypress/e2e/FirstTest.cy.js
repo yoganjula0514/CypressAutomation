@@ -4,17 +4,22 @@ describe('Launch GreenKart', () => {
     cy.get('.search-keyword').should(`be.visible`).type('ca')
     cy.get(`.product:visible`).should(`have.length`, 4) // Handling only visible elements
 
+    // Alias usage
+    cy.get(`.products`).as(`productLocator`)
+  
     // Find element from parent child chaining    
     cy.get(`.products .product`).should(`have.length`, 4)
 
     // Find command: Get child elements from parent element
-    cy.get(`.products`).find(`.product`).should(`have.length`, 4)
+    cy.get(`@productLocator`).find(`.product`).should(`have.length`, 4)
 
     // Select Add to cart for 2nd product
-    cy.get(`.products`).find(`.product`).eq(1).contains(`ADD TO CART`).click()
+    cy.get(`@productLocator`).find(`.product`).eq(1).contains(`ADD TO CART`).click().then(()=>{
+      console.log('This javascript asyncronous command is resolved using promise handling.')
+    })
 
     // each method usage(jQuery)
-    cy.get(`.products`).find(`.product`).each(($item, index, $list) => {
+    cy.get(`@productLocator`).find(`.product`).each(($item, index, $list) => {
       const actualProductName = $item.find(`h4.product-name`).text()
       if (actualProductName.includes(`Cashews`)) {
         cy.wrap($item).find(`button`).click()
@@ -27,6 +32,10 @@ describe('Launch GreenKart', () => {
       cy.log(logElement.text())
     })
 
+    // Assert usage
+    cy.get(`.brand`).should(`have.text`, `GREENKART`)
+
+    
     cy.log(`Test completed successfully!`)
   })
 })
